@@ -1,4 +1,4 @@
-# 画像認識でオート寿司打に挑戦する
+# 文字認識でオート寿司打に挑戦する
 
 ## TesseractとPyOCRのインストール
 
@@ -120,7 +120,7 @@ import pyocr
 tools = pyocr.get_available_tools()
 tool = tools[0]
 
-x, y, w, h = pyautogui.locateOnScreen('src/murasaki2.png', grayscale=True)
+x, y, w, h = pyautogui.locateOnScreen('src/murasaki.png', grayscale=True)
 regx, regy, regw, regh = x, y - int(h*1.95), int(w*4.5), int(h*0.65)
 
 while(True):
