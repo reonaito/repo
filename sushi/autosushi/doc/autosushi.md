@@ -141,3 +141,85 @@ while(True):
 
 一応機能はしているが，はっきり言って人力より遅い．
 文字認識の遅さと正確性の低さが問題である．
+
+処理速度に関して具体的に言うと，スクリーンショットの取得と文字認識にそれぞれ0.5秒ほどかかっている．
+
+## 試行錯誤
+
+スクリーンショット取得の遅さを解消するため，他のスクリーンショットの取得法を試す．
+
+---
+
+[PyGObject](https://pygobject.readthedocs.io/en/latest/index.html)
+
+```
+brew install gtk+3
+brew install gobject-introspection
+```
+
+```
+Package libffi was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libffi.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'libffi', required by 'gobject-introspection-1.0', not found
+```
+
+```
+export PKG_CONFIG_PATH=`brew --prefix libffi`/lib/pkgconfig
+```
+
+```
+pip install pygobject
+```
+
+```Python
+import gi
+gi.require_version("Gdk", "3.0")
+from gi.repository import Gdk
+from gi.repository import GdkPixbuf
+
+win = Gdk.get_default_root_window()
+pixbuf = Gdk.pixbuf_get_from_window(win, 0, 0, 200, 150)
+pixbuf.savev("screenshot.png","png", (), ())
+```
+
+これはスクリーンショットを取得することができなかった．
+
+---
+
+[Pillow](https://pillow.readthedocs.io/en/5.1.x/)
+
+```
+pip install pyscreenshot
+pip install pillow
+```
+
+```
+from PIL import ImageGrab
+ImageGrab.grab().save("picture.png")
+```
+
+これはPyAutoGUIと変わらない．というより，PyAutoGUIのスクリーンショット機能が内部でPillowを呼び出しているようだ．
+
+---
+
+[Selenium](http://selenium-python.readthedocs.io/)
+
+```
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+chrome_options = Options()
+chrome_options.add_argument("window-size=1200,1000")
+
+driver = webdriver.Chrome(chrome_options=chrome_options)
+
+URL = 'http://neutral.x0.com/home/sushida/play2.html'
+driver.get(URL);
+
+driver.save_screenshot("picture.png")
+```
+
+スクレイピングでも用いたSeleniumを使ってみる．
+
+結果は，スクリーンショットを取るのにかかる時間はPyAutoGUIとそれほど変わらなかった．
