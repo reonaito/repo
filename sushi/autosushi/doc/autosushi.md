@@ -144,6 +144,8 @@ while(True):
 
 処理速度に関して具体的に言うと，スクリーンショットの取得と文字認識にそれぞれ0.5秒ほどかかっている．
 
+スクリーンショットに関して言うと，PyAutoGUIのスクリーンショットは，一度ファイルに保存してそれを読み込んでいる模様．
+
 ## 試行錯誤
 
 スクリーンショット取得の遅さを解消するため，他のスクリーンショットの取得法を試す．
@@ -205,7 +207,7 @@ ImageGrab.grab().save("picture.png")
 
 [Selenium](http://selenium-python.readthedocs.io/)
 
-```
+```Python
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -223,3 +225,83 @@ driver.save_screenshot("picture.png")
 スクレイピングでも用いたSeleniumを使ってみる．
 
 結果は，スクリーンショットを取るのにかかる時間はPyAutoGUIとそれほど変わらなかった．
+
+## Ubuntu仮想マシンの導入
+
+PyGObjectを使用するため，[VirtualBox](https://www.virtualbox.org/)を用いてUbuntuのGUI版の仮想マシンを導入する．
+
+Ubuntuはaptを用いることでいろいろなパッケージを容易にインストールできる上，VirtualBoxのスナップショット機能を使えば簡単に環境を巻き戻すことができるので，Anacondaは使わずに必要なパッケージはaptで導入する．
+
+### PyGObjectのインストール
+
+UbuntuにPyGObjectをインストールするのは以下のコマンドでできる．
+
+```
+sudo apt install python-gi python-gi-cairo python3-gi python3-gi-cairo gir1.2-gtk-3.0
+```
+
+スクリーンショットの所要時間を測定してみる．
+
+```Python
+import gi
+gi.require_version("Gdk", "3.0")
+from gi.repository import Gdk
+import time
+
+start = time.time()
+win = Gdk.get_default_root_window()
+pixbuf = Gdk.pixbuf_get_from_window(win, *win.get_geometry())
+print(time.time() - start)
+
+start = time.time()
+pixbuf.savev("screenshot.png","png", (), ())
+print(time.time() - start)
+```
+
+スクリーンショットを取得するのにかかった時間: 0.048秒  
+ファイルに保存するのにかかった時間: 0.42秒
+
+ファイルを介さなければ早い．
+
+### PyAutoGUIのインストール
+
+```
+sudo apt install python3-pip
+pip3 install python3-xlib
+sudo apt-get install scrot
+sudo apt-get install python3-tk
+sudo apt-get install python3-dev
+pip3 install pyautogui
+```
+
+### Tesseract，PyOCRのインストール
+
+```
+sudo apt install python3-pyocr
+```
+
+Tesseractは依存パッケージとして自動的にインストールされる．
+
+## PyGObjectを用いた改善
+
+GdkPixbufからPILイメージへの変換は以下の通り．
+
+```Python
+import gi
+gi.require_version(Gdk", "3.0")
+from gi.repository import Gdk
+from PIL import Image
+import time
+
+start = time.time()
+win = Gdk.get_default_root_window()
+pix = Gdk.pixbuf_get_from_window(win, *win.get_geometry())
+
+data = pix.get_pixels()
+w = pix.props.width
+h = pix.props.height
+stride = pix.props.rowstride
+mode = "RGB"
+im = Image.frombytes(mode, (w, h), data, "raw", mode, stride)
+print(time.time() - start)
+```

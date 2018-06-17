@@ -1,6 +1,5 @@
 import numpy as np
 import time
-import cv2
 import pyautogui
 from PIL import Image
 import pyocr
