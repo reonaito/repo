@@ -24,11 +24,11 @@ conda install -c conda-forge pyautogui
 
 ### 醤油の画像の用意
 
-![src/murasaki.png](src/murasaki.png)
+![doc/murasaki.png](doc/murasaki.png)
 
-[寿司打](http://neutral.x0.com/home/sushida/play2.html)を一度スタートし，[src/murasaki.png](src/murasaki.png)を参考に醤油の画像のスクリーンショットを撮影する．
+[寿司打](http://neutral.x0.com/home/sushida/play2.html)を一度スタートし，[上記の画像](doc/murasaki.png)を参考に醤油の画像のスクリーンショットを撮影する．
 
-撮影した自身の醤油の画像を，[src/murasaki.png](src/murasaki.png)に上書きする．
+`src` とう名前のフォルダを作り，撮影した自身の醤油の画像をその中に `murasaki.png` という名前で保存する．
 
 ## 実行
 
