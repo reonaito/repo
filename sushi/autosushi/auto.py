@@ -13,7 +13,7 @@ tool = tools[0]
 win = Gdk.get_default_root_window()
 
 x, y, w, h = pyautogui.locateOnScreen('src/murasaki.png', grayscale=True)
-regx, regy, regw, regh = x, y - int(h*1.95), int(w*4.5), int(h*0.65)
+regx, regy, regw, regh = int(x+w*0.4), int(y-h*1.8), int(w*3.4), int(h*0.5)
 
 time.sleep(0.5)
 
@@ -37,7 +37,9 @@ while(True):
     )
     types = txt.split(" ")
     typing = types[np.argmax(list(map(lambda x: len(x), types)))]
+    if len(typing) == 0:
+        typing = "-"
     print(typing)
     pyautogui.typewrite(typing)
-    time.sleep(0.4)
+    time.sleep(0.3)
 
