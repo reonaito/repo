@@ -39,4 +39,5 @@ while(True):
     typing = types[np.argmax(list(map(lambda x: len(x), types)))]
     print(typing)
     pyautogui.typewrite(typing)
+    time.sleep(0.4)
 
