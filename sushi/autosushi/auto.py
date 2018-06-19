@@ -32,8 +32,7 @@ while(True):
 
     txt = tool.image_to_string(
         img,
-        lang="eng",
-        builder=pyocr.builders.TextBuilder()
+        builder=pyocr.builders.TextBuilder(tesseract_layout=8)
     )
     types = txt.split(" ")
     typing = types[np.argmax(list(map(lambda x: len(x), types)))]
@@ -41,5 +40,5 @@ while(True):
         typing = "-"
     print(typing)
     pyautogui.typewrite(typing)
-    time.sleep(0.3)
+    time.sleep(0.35)
 
