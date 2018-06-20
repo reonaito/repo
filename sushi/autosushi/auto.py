@@ -13,12 +13,11 @@ def cut_with_frame(img):
         pix = np.array(img)
 
         # extract the white frame by looking at the pix.red of the top row
-        row_top = pix[0, :, 0]
-        thresholds = np.where(row_top > 240)[0]
-        th_left, th_right = thresholds[0], thresholds[-1]
+        row_top_red = pix[0, :, 0]
+        filtering = np.where(row_top_red < 90)[0]
 
         # convert the img
-        cut_pix = pix[:, th_left:th_right, :]
+        cut_pix = pix[:, filtering, :]
         cut_img = Image.fromarray(cut_pix)
 
         return cut_img
@@ -65,11 +64,11 @@ while(True):
     print(typing)
 
     # saving
-    cut_img.save("sample/cut_" + str(index) + ".png")
-    img.save("sample/original_" + str(index) + ".png")
-    with open("sample/typing_" + str(index) + ".txt", mode='w') as f:
-        f.write(txt)
-    index = index + 1
+    # cut_img.save("sample/cut_" + str(index) + ".png")
+    # img.save("sample/original_" + str(index) + ".png")
+    # with open("sample/typing_" + str(index) + ".txt", mode='w') as f:
+        # f.write(txt)
+    # index = index + 1
 
     pyautogui.typewrite(typing)
     time.sleep(0.4)
